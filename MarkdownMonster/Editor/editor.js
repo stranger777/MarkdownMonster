@@ -5,7 +5,6 @@
 /// <reference path="editor-helpers.js" />
 /// <reference path="scripts/ace/ace.js" />
 
-
 (function () {
     var Split = ace.require("ace/split").Split;
     ace.require("ace/ext/rtl");
@@ -491,9 +490,17 @@
         // by using clipboard replacement
         // Leaves scroll position and undo buffer intact
         replaceContent: function (text) {
+            // remember cursor position
+            var pos = te.getCursorPosition();
+          
             var sel = te.editor.getSelection();
             sel.selectAll();
             te.setselection(text);
+
+            // reset cursor position
+            setTimeout(function() {
+                te.setCursorPosition(pos.row, pos.Col);
+              }, 5);
         },
         refresh: function (ignored) {
             te.editor.resize(true); //force a redraw
@@ -619,12 +626,12 @@
         },
         setSelectionRange: function (startRow, startColumn, endRow, endColumn) {
             var sel = te.editor.getSelection();
+
             // assume a selection range if an object is passed
             if (typeof startRow == "object") {
-                sel.setSelectionRange(startRow);
+              sel.setSelectionRange(startRow);
                 return;
             }
-
 
             var range = sel.getRange();
             range.setStart({ row: startRow, column: startColumn });
@@ -1284,12 +1291,14 @@ function Invoke(teFunction)
 
 //}
 
-
 // For Standalone from WebBrowser partial execution - uncomment this
-//setTimeout(function() {
-//  window.textEditor.initialize(null);
+var standalone = false;
+if (standalone) {
+    setTimeout(function() {
+    window.textEditor.initialize(null);
 
-//  te.setvalue("# Markdown Text\n\n* Bullet 1\n* Bullet 2");
-//  // demonstrate how an external application can 'globally' trigger a function
-//  //Invoke("setvalue","# Markdown Text\n\n* Bullet 1\n* Bullet 2");   
-//},400);
+    te.setvalue("# Markdown Text\n\n* Bullet 1\n* Bullet 2");
+    // demonstrate how an external application can 'globally' trigger a function
+    //Invoke("setvalue","# Markdown Text\n\n* Bullet 1\n* Bullet 2");   
+    },400);
+}

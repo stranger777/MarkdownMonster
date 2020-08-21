@@ -5,23 +5,32 @@
 [![Web Site](https://img.shields.io/badge/Markdown_Monster-WebSite-blue.svg)](https://markdownmonster.west-wind.com)
 
 
-### 1.23.16
-<small>not released yet</small>
+### 1.23.17
+<small>August 19th, 2020</small> 
 
-* **Fix Jekyll Image Publishing**  
-Fix bug with images published to a Jekyll Blog. All but the last image were deleted by the post handler previously. Related: Also updated the Preview URL generator used to navigate to the generated URL which should work much better than before for the post title as well as the categories to match the Jekyll snake case conversions.
+* **Add additional Code Fencing inline Syntax Colorings**   
+Added additional inline syntax colorings for the following languages: `csharp`, `typescript`, `json`, `typescript`. You now get syntax colored text as you type or paste inside of triple backtick fenced code blocks.
 
-* **Fix: Light Theme Crashes**  
-Fix several bugs related to light theme missing resources. 
+* **Additional File Browser Icons and Editing Syntax Support**  
+Added additional icons that can display in the Folder Browser including `Dart` and `Dockerfile` files. Both file types can now also be edited in MM. Also fix additional icons for various external document types.
 
-### 1.23.15
-<small>August 5th, 2020</small>
+* **Add Window Menu Shortcut to Open Document in Folder Browser**  
+Added yet another shortcut to quickly navigate the Folder Browser to the active document's location on the Window Menu. Default shortcut is `alt-w-f`.
 
 * **Better File Encoding Support**  
 You can now use **Load additional Encodings...** to load up all encodings available. Choosing an encoding will try to reload the document with the new encoding.
 
 * **Improved Code Snippet Syntax for Html to Markdown Conversions**  
 Worked with [ReverseMarkdown](https://github.com/mysticmind/reversemarkdown-net) to add better support for capturing syntax for many common services including GitHub, highlightJs, Atlassian and Confluence. For most snippets the syntax should now be applied to code-fenced blocks.
+
+* **Fix: File Encoding and Save Bug**  
+Fixed issue where file saving under certain circumstances with non-UTF8 encodings would cause the file not save. Fixed by assigning default encoding and fixing up encoding lookup failures as well as adding additional logging around encoding for notification or save problems.
+
+* **Fix Jekyll Image Publishing**  
+Fix bug with images published to a Jekyll Blog. All but the last image were deleted by the post handler previously. Related: Also updated the Preview URL generator used to navigate to the generated URL which should work much better than before for the post title as well as the categories to match the Jekyll snake case conversions.
+
+* **Fix: Light Theme Crashes**  
+Fix several bugs related to light theme missing resources. 
 
 
 ### 1.23.14

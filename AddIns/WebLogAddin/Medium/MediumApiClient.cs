@@ -106,6 +106,12 @@ namespace WebLogAddin.Medium
                 return false;
             }
 
+            if (string.IsNullOrEmpty(httpResult))
+            {
+                ErrorMessage = "The server returned no or non-JSON data for user retrieval.";
+                return false;
+            }
+            
             var result = JsonConvert.DeserializeObject<MediumUserResult>(httpResult);
             if (result == null)
             {
@@ -242,6 +248,12 @@ namespace WebLogAddin.Medium
                 ErrorMessage = http.ErrorMessage;
                 return null;
             }
+
+            if (string.IsNullOrEmpty(httpResult))
+            {
+                ErrorMessage = "Request failure: Server returned no response.";
+                return null;
+            }
             if (httpResult.Contains("\"errors\":"))
             {
                 //{ "errors":[{"message":"Publication does not exist or user not allowed to publish in it","code":2006}]}
@@ -296,7 +308,7 @@ namespace WebLogAddin.Medium
         }
 
        
-        public IEnumerable<UserBlog>  GetBlogs()
+        public List<UserBlog>  GetBlogs()
         {
             if (!GetUser())
                 return null;
@@ -327,6 +339,12 @@ namespace WebLogAddin.Medium
                      BlogId = blog.id,
                      BlogName = blog.name,                     
                 });
+            }
+
+            if (blogs.Count < 1)
+            {
+                ErrorMessage = "There are no Publications available to publish to on this account.";
+                return null;
             }
 
             return blogs;

@@ -489,10 +489,12 @@ oop.inherits(Mode, TextMode);
     };
 
     this.$id = "ace/mode/c_cpp";
+    this.snippetFileId = "ace/snippets/c_cpp";
 }).call(Mode.prototype);
 
 exports.Mode = Mode;
-});                (function() {
+});
+                (function() {
                     window.require(["ace/mode/c_cpp"], function(m) {
                         if (typeof module == "object" && typeof exports == "object" && module) {
                             module.exports = m;

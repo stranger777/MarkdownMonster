@@ -2756,7 +2756,7 @@ Do you want to continue anyway?", "Disable Markdown Script Rendering",
                 foreach (var file in files)
                 {
                     var ext = Path.GetExtension(file.ToLower());
-                    if (File.Exists(file) && mmApp.AllowedFileExtensions.Contains($",{ext},"))
+                    if (File.Exists(file) && ("," +  mmApp.AllowedFileExtensions + ",").Contains($",{ext},"))
                     {
                         OpenTab(file, rebindTabHeaders: true);
                     }
@@ -3094,28 +3094,36 @@ Do you want to continue anyway?", "Disable Markdown Script Rendering",
                 return;
             }
 
-            if (Model.ActiveDocument.IsDirty &&
-                MessageBox.Show(
-                    "We need to reload the document with the new encoding, but there are changes pending in the document. " +
-                    "Reopening will lose these changes.\n\n" +
-                    "Reload the document with new Encoding and lose those changes?",
-                    "Document Changes Pending",
-                    MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.No)
+            encoding = mmFileUtils.GetEncoding(enc);
+            if (Model.ActiveDocument.Encoding.Equals(encoding))
             {
+                Model.Window.ShowStatusSuccess($"Document already set to {StatusEncoding.SelectedValue} encoding.");
                 return;
             }
 
-            encoding = mmFileUtils.GetEncoding(enc);
-            Model.ActiveDocument.Encoding = encoding;
+            if (Model.ActiveDocument.IsDirty &&
+                MessageBox.Show(
+                    "This document has unsaved changes that have to be saved before the document Encoding can be updated.\n\n" +
+                    "Do you want to save changes?",
+                    "Document Changes Pending",
+                    MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.No)
+            {
+                Model.Window.ShowStatusError("Encoding has not been updated. Please save your document first.");
+                return;
+            }
 
+           
+            Model.ActiveDocument.Encoding = encoding;
 
             // otherwise re-open
             if (!Model.ActiveDocument.Load(Model.ActiveDocument.Filename, encoding: encoding))
                 Model.Window.ShowStatusError("Couldn't reopen file with the " + encoding.EncodingName + " Encoding.");
             else
             {
+                // Save Selection and past new content
                 Model.ActiveEditor.ReplaceContent(Model.ActiveDocument.CurrentText);
                 Model.ActiveEditor.PreviewMarkdownCallback(true);
+                Model.ActiveDocument.IsDirty = true;
             }
 
             StatusEncoding.SelectedValue = mmFileUtils.GetEncodingName(encoding);

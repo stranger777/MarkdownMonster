@@ -1,19 +1,19 @@
-define("ace/theme/vscodedark", ["require", "exports", "module", "ace/lib/dom"], function (require, exports, module) {
+define("ace/theme/vscodedark",["require","exports","module","ace/lib/dom"], function(require, exports, module) {
 
-        exports.isDark = true;
-        exports.cssClass = "ace-vscodedark";
-        exports.cssText = ".ace-vscodedark .ace_gutter {\
+exports.isDark = true;
+exports.cssClass = "ace-vscodedark";
+exports.cssText = ".ace-vscodedark {\
+background: #222;\
+color: #EEEEEE;\
+font-weight: normal;\
+}\
+.ace-vscodedark .ace_gutter {\
 background: #191919;\
 color: #E2E2E2\
 }\
 .ace-vscodedark .ace_print-margin {\
 width: 1px;\
 background: #333\
-}\
-.ace-vscodedark {\
-background: #222;\
-color: #EEEEEE;\
-font-weight: normal;\
 }\
 .ace-vscodedark .ace_cursor {\
 color: #A7A7A7\
@@ -28,9 +28,9 @@ box-shadow: 0 0 3px 0px #141414;\
 .ace-vscodedark .ace_marker-layer .ace_step {\
 background: rgb(102, 82, 0)\
 }\
-.ace-vscodedark .ace_marker-layer .ace_bracket {\
+.ace-vscodedark .ace_marker-layer .ace_bracket .ace_paren {\
 margin: -1px 0 0 -1px;\
-border: 1px solid rgba(255, 255, 255, 0.25)\
+border: 1px solid #888;\
 }\
 .ace-vscodedark .ace_marker-layer .ace_active-line {\
 background: #303030;\
@@ -56,22 +56,27 @@ color: #CDA869\
 .ace-vscodedark .ace_heading,\
 .ace-vscodedark .ace_markup.ace_heading,\
 .ace-vscodedark .ace_support.ace_constant {\
-color:  #569bd5;\
+color:  #4c84b3;;\
 }\
 .ace-vscodedark .ace_constant.ace_escape {\
 color: goldenrod !important;\
 }\
+.ace-vscodedark .ace_constant.ace_language,\
+.ace-vscodedark .ace_constant.ace_attribute\
+{\
+color: #57bebe;\
+}\
 .ace-vscodedark .ace_keyword {\
-    color:  #c485bf;\
+color: #569bd5;\
 }\
 .ace-vscodedark .ace_identifier {\
-    color:#8bdbfd;\
+color: rgb(213, 231, 255);\
 }\
 .ace-vscodedark .ace_name {\
-    color: #dbdba9 !important;\
+color: #dbdba9 !important;\
 }\
 .ace-vscodedark .ace_type {\
-    color: #45c8af !important;\
+color: #45c8af !important;\
 }\
 .ace-vscodedark .ace_invalid.ace_illegal {\
 color: #F8F8F8;\
@@ -91,7 +96,7 @@ border-color: #F8F8F8\
 }\
 .ace-vscodedark .ace_support.ace_function,\
 .ace-vscodedark .ace_function {\
-color: #fff8d6;\
+color: lightskyblue;\
 }\
 .ace-vscodedark .ace_markup.ace_list,\
 .ace-vscodedark .ace_storage {\
@@ -114,16 +119,16 @@ color: #608a4e;\
 }\
 .ace-vscodedark .ace_variable,\
 .ace-vscodedark .ace_attribute-name{\
-    color:#9bdbdf !important;\
+color:#9bdbdf !important;\
 }\
 .ace-vscodedark .ace_numeric {\
-    color: #95cda7\
+color: #95cda7\
 }\
 .ace-vscodedark .ace_xml-pe {\
-    color: #494949\
+color: #494949\
 }\
 ace_line.ace_selected {\
-    background-color: #777 !important;\
+background-color: #777 !important;\
 }\
 .ace-vscodedark .ace_heading {\
 font-weight: bold;\
@@ -133,7 +138,7 @@ color: #569bd5;\
 font-weight: bold !important;\
 }\
 .ace_blockquote{\
-    color: #54aa4e !important;\
+color: #54aa4e !important;\
 }\
 .ace-vscodedark .ace_emphasis {\
 font-style: italic;\
@@ -152,3 +157,4 @@ dom.importCssString(exports.cssText, exports.cssClass);
                         }
                     });
                 })();
+            

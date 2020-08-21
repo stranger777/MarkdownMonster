@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -10,13 +9,8 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media;
-using FontAwesome.WPF;
-using MarkdownMonster.Annotations;
 using MarkdownMonster.Utilities;
-using MarkdownMonster.Windows;
 using Microsoft.Win32;
-using ReverseMarkdown.Converters;
 using Westwind.Utilities;
 
 namespace MarkdownMonster
@@ -27,8 +21,7 @@ namespace MarkdownMonster
     public static class mmFileUtils
     {
 
-
-
+        
         #region File Utilities
         /// <summary>
         /// Method checks for existance of full filename and tries
@@ -117,15 +110,17 @@ namespace MarkdownMonster
             if (filename.ToLower() == "untitled")
                 return "markdown";
 
-            string editorSyntax = null;
-
             var ext = Path.GetExtension(filename).ToLower().Replace(".", "");
-            if (ext == "md")
+            if (ext == "md" || ext == "markdown")
                 return "markdown"; // most common use case
 
+            var justName = Path.GetFileName(filename);
+            if (justName.Equals("dockerfile", StringComparison.OrdinalIgnoreCase))
+                return "dockerfile";
+
             // look up all others
-            if (!mmApp.Configuration.EditorExtensionMappings.TryGetValue(ext, out editorSyntax))
-                return null;
+            if (!mmApp.Configuration.EditorExtensionMappings.TryGetValue(ext, out string editorSyntax))
+                return null; // editor doesn't handle it
 
             return editorSyntax;
         }
@@ -171,6 +166,12 @@ namespace MarkdownMonster
         #region Encoding
 
         /// <summary>
+        /// Reusable UTF-8 Encoding that doesn't have a BOM as
+        /// the .NET default Encoding.Utf8 has.
+        /// </summary>
+        public static  Encoding Utf8EncodingWithoutBom { get;  }= new UTF8Encoding(false);
+
+        /// <summary>
         /// Retrieve the file encoding for a given file so we can capture
         /// and store the Encoding when writing the file back out after
         /// editing.
@@ -183,7 +184,7 @@ namespace MarkdownMonster
         public static Encoding GetFileEncoding(string srcFile)
         {
             if (string.IsNullOrEmpty(srcFile) || srcFile == "untitled")
-                return Encoding.UTF8;
+                return mmFileUtils.Utf8EncodingWithoutBom;
 
             // Use Default of Encoding.Default (Ansi CodePage)
             Encoding enc;
@@ -205,10 +206,10 @@ namespace MarkdownMonster
             else if (buffer.Length > 2 && buffer[0] == 0x2b && buffer[1] == 0x2f && buffer[2] == 0x76)
                 enc = Encoding.UTF7;
             else if (buffer.Length > 3 && buffer[0] != 0 && buffer[1] == 0 && buffer[2] != 0 && buffer[3] == 0)
-                enc = Encoding.Unicode;  // no BOM Unicode - bad idea: Should always have BOM and we'll write it
+                enc = Encoding.Unicode; // no BOM Unicode - bad idea: Should always have BOM and we'll write it
             else
                 // no identifiable BOM - use UTF-8 w/o BOM
-                enc = new UTF8Encoding(false);
+                enc = mmFileUtils.Utf8EncodingWithoutBom;
 
             return enc;
         }
@@ -221,6 +222,9 @@ namespace MarkdownMonster
         /// <returns></returns>
         public static string GetEncodingName(Encoding encoding)
         {
+            if(encoding == null)
+                encoding = Utf8EncodingWithoutBom;
+
             string enc = string.Empty;
             string name = encoding.BodyName;
             if (name == "utf-8")
@@ -242,7 +246,6 @@ namespace MarkdownMonster
             return enc;
         }
 
-        public static Encoding Utf8EncodingWithoutBom = null;
 
         public static Encoding GetEncoding(string encodingName)
         {
@@ -251,20 +254,11 @@ namespace MarkdownMonster
             if (encodingName == "UTF-8 with BOM")
                 return encoding;
             if (encodingName == "UTF-8")
-            {
-                if (Utf8EncodingWithoutBom != null)
-                    return Utf8EncodingWithoutBom;
-                Utf8EncodingWithoutBom = new UTF8Encoding(false);
                 return Utf8EncodingWithoutBom;
-            }
             if (encodingName == "UTF-16 BE")
-            {
                 return Encoding.BigEndianUnicode;
-            }
             if (encodingName == "UTF-16 LE")
-            {
                 return Encoding.Unicode;
-            }
 
             var enc = Encoding.GetEncodings().FirstOrDefault(e => e.DisplayName == encodingName || e.Name == encodingName);
             if (enc == null) return encoding;
@@ -318,11 +312,7 @@ namespace MarkdownMonster
 
             return encList;
         }
-
-        
-
         #endregion
-
 
         #region Type and Language Utilities
 
